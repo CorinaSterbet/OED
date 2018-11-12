@@ -3,18 +3,128 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as _ from 'lodash';
-import { Line, ChartComponentProps } from 'react-chartjs-2';
-import { ChartData, ChartDataSets, ChartPoint, ChartTooltipItem } from 'chart.js';
 import * as moment from 'moment';
 import { connect } from 'react-redux';
 import getGraphColor from '../utils/getGraphColor';
 import { State } from '../types/redux/state';
 
+import { Line, ChartComponentProps } from 'react-chartjs-2';
+import { ChartData, ChartDataSets, ChartPoint, ChartTooltipItem } from 'chart.js';
 
-function mapStateToProps(state: State) {
+import * as Plotly from 'plotly.js';
+import { PlotParams } from 'react-plotly.js';
+import { Data, Layout } from 'plotly.js';
+
+
+var createPlotlyComponent = require('react-plotly.js/factory');
+const Plot = createPlotlyComponent(Plotly);
+
+
+function mapStateToProps(state: State){
+	const timeInterval = state.graph.timeInterval;
+	const datasets: Data[] = [];
+	
+	// Add all meters data to the chart
+	for (const meterID of state.graph.selectedMeters) {
+		const byMeterID = state.readings.line.byMeterID[meterID];
+		if (byMeterID !== undefined) {
+			const readingsData = byMeterID[timeInterval.toString()];
+			if (readingsData !== undefined && !readingsData.isFetching) {
+				const label = state.meters.byMeterID[meterID].name;
+				if (readingsData.readings === undefined) {
+					throw new Error('Unacceptable condition: readingsData.readings is undefined.');
+				}
+
+				const xData: string[] = [];
+				const yData: number[] = [];
+				const hoverText: string[] = [];
+				_.values(readingsData.readings).forEach(function(reading){
+					const readingTime = moment(reading[0]);
+ 					xData.push(readingTime.format('YYYY-MM-DD'));
+  					yData.push(reading[1]);
+  					hoverText.push(`<b> ${readingTime.format('dddd, MMM DD, YYYY hh:mm a')} </b> <br> ${label}: ${reading[1]} kW`);
+				});
+
+				datasets.push({
+					name: label,
+					x: xData,
+					y: yData,
+					text: hoverText,
+					hoverinfo: 'text',
+					type: 'scatter',
+	            	mode: 'lines',
+	            	marker: {color: getGraphColor(label)},
+				});
+			}
+		}
+	}
+
+	// Add all groups data to the chart
+	for (const groupID of state.graph.selectedGroups) {
+		const byGroupID = state.readings.line.byGroupID[groupID];
+		if (byGroupID !== undefined) {
+			const readingsData = byGroupID[timeInterval.toString()];
+			if (readingsData !== undefined && !readingsData.isFetching) {
+				const label = state.groups.byGroupID[groupID].name;
+				if (readingsData.readings === undefined) {
+					throw new Error('Unacceptable condition: readingsData.readings is undefined.');
+				}
+
+				const xData: string[] = [];
+				const yData: number[] = [];
+				const hoverText: string[] = [];
+				_.values(readingsData.readings).forEach(function(reading){
+					const readingTime = moment(reading[0]);
+ 					xData.push(readingTime.format('YYYY-MM-DD'));
+  					yData.push(reading[1]);
+  					hoverText.push(`<b> ${readingTime.format('dddd, MMM DD, YYYY hh:mm a')} </b> <br> ${label}: ${reading[1]} kW`);
+				});
+
+				datasets.push({
+					name: label,
+					x: xData,
+					y: yData,
+					text: hoverText,
+					hoverinfo: 'text',
+					type: 'scatter',
+	            	mode: 'lines',
+	            	marker: {color: getGraphColor(label)},
+				});
+			}
+		}
+	}
+	
+	const layout: Partial<Layout> = {
+		width: 700,
+		height: 550,
+		title: "First Test",
+		showlegend: true,
+		legend: {
+			x: 0,
+			y: 1.1,
+			"orientation": "h",
+		},
+		yaxis: {
+    		title: 'kW'
+        },
+		xaxis: {
+            rangeslider: {thickness: 0.07}
+        },
+	};
+
+	const props: PlotParams = {
+		data: datasets,
+		layout	
+	};
+
+	return props;
+}
+
+
+function mapStateToPropsss(state: State) {
 	const timeInterval = state.graph.timeInterval;
 	const datasets: ChartDataSets[] = [];
-
+	
 	// Add all meters data to the chart
 	for (const meterID of state.graph.selectedMeters) {
 		const byMeterID = state.readings.line.byMeterID[meterID];
@@ -122,4 +232,4 @@ function mapStateToProps(state: State) {
 	return props;
 }
 
-export default connect(mapStateToProps)(Line);
+export default connect(mapStateToProps)(Plot);
