@@ -8,17 +8,22 @@ import { connect } from 'react-redux';
 import getGraphColor from '../utils/getGraphColor';
 import { State } from '../types/redux/state';
 
-import * as Plotly from 'plotly.js';
-import { PlotParams } from 'react-plotly.js';
-import { Data, Layout } from 'plotly.js';
+// import * as Plotly from 'plotly.js';
+// import { PlotParams } from 'react-plotly.js';
+// import { Data, Layout } from 'plotly.js';
 
+// var createPlotlyComponent = require('react-plotly.js/factory');
+// // import createPlotlyComponent from 'react-plotly.js/factory';
+// const Plot = createPlotlyComponent(Plotly);
 
-var createPlotlyComponent = require('react-plotly.js/factory');
-const Plot = createPlotlyComponent(Plotly);
+import { IPlotlyChartProps } from 'react-plotlyjs-ts';
+import PlotlyChart from 'react-plotlyjs-ts';
+
 
 function mapStateToProps(state: State){
 	const timeInterval = state.graph.timeInterval;
-	const datasets: Data[] = [];
+	const datasets: any[] = [];
+	// const datasets: Data[] = [];
 	
 	// Add all meters data to the chart
 	for (const meterID of state.graph.selectedMeters) {
@@ -90,9 +95,9 @@ function mapStateToProps(state: State){
 		}
 	}
 	
-	const layout: Partial<Layout> = {
-		width: 700,
-		height: 550,
+	const layout: any = {
+	// const layout: Partial<Layout> = {
+		autozise: true,
 		title: "First Test",
 		showlegend: true,
 		legend: {
@@ -101,19 +106,27 @@ function mapStateToProps(state: State){
 			"orientation": "h",
 		},
 		yaxis: {
-    		title: 'kW'
-        },
+    		title: 'kW',
+    		showgrid: true,
+    		gridcolor: '#ddd'
+
+        },        
 		xaxis: {
-            rangeslider: {thickness: 0.07}
+            rangeslider: {thickness: 0.1},
+            showgrid: true,
+            gridcolor: '#ddd'
+
         },
 	};
 
-	const props: PlotParams = {
+
+	const props: IPlotlyChartProps = {
+	// const props: PlotParams = {
 		data: datasets,
-		layout	
+		layout
 	};
 
 	return props;
 }
 
-export default connect(mapStateToProps)(Plot);
+export default connect(mapStateToProps)(PlotlyChart);
