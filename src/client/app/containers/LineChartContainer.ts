@@ -7,7 +7,8 @@ import * as moment from 'moment';
 import { connect } from 'react-redux';
 import getGraphColor from '../utils/getGraphColor';
 import { State } from '../types/redux/state';
-import PlotlyChart, { IPlotlyChartProps } from 'react-plotlyjs-ts';
+import Plot, { PlotParams } from 'react-plotly.js';
+import * as React from 'react';
 
 function mapStateToProps(state: State) {
 	const timeInterval = state.graph.timeInterval;
@@ -104,12 +105,16 @@ function mapStateToProps(state: State) {
 	};
 
 
-	const props: IPlotlyChartProps = {
+	const props: PlotParams = {
 		data: datasets,
-		layout
+		layout,
+		onSliderChange: (event: Readonly<Plotly.SliderChangeEvent>) => {
+			console.log('hello');
+		}
 	};
 
 	return props;
 }
 
-export default connect(mapStateToProps)(PlotlyChart);
+const p: React.PureComponent<PlotParams> = Plot;
+export default connect(mapStateToProps)(p);
