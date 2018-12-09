@@ -7,23 +7,11 @@ import * as moment from 'moment';
 import { connect } from 'react-redux';
 import getGraphColor from '../utils/getGraphColor';
 import { State } from '../types/redux/state';
-
-// import * as Plotly from 'plotly.js';
-// import { PlotParams } from 'react-plotly.js';
-// import { Data, Layout } from 'plotly.js';
-
-// var createPlotlyComponent = require('react-plotly.js/factory');
-// // import createPlotlyComponent from 'react-plotly.js/factory';
-// const Plot = createPlotlyComponent(Plotly);
-
-import { IPlotlyChartProps } from 'react-plotlyjs-ts';
-import PlotlyChart from 'react-plotlyjs-ts';
-
+import PlotlyChart, { IPlotlyChartProps } from 'react-plotlyjs-ts';
 
 function mapStateToProps(state: State){
 	const timeInterval = state.graph.timeInterval;
 	const datasets: any[] = [];
-	// const datasets: Data[] = [];
 	
 	// Add all meters data to the chart
 	for (const meterID of state.graph.selectedMeters) {
@@ -39,12 +27,24 @@ function mapStateToProps(state: State){
 				const xData: string[] = [];
 				const yData: number[] = [];
 				const hoverText: string[] = [];
-				_.values(readingsData.readings).forEach(function(reading){
+				const readings = _.values(readingsData.readings);
+				readings.forEach(reading => {
 					const readingTime = moment(reading[0]);
- 					xData.push(readingTime.format('YYYY-MM-DD'));
-  					yData.push(reading[1]);
-  					hoverText.push(`<b> ${readingTime.format('dddd, MMM DD, YYYY hh:mm a')} </b> <br> ${label}: ${reading[1]} kW`);
-				});
+					xData.push(readingTime.format('YYYY-MM-DD HH:mm:ss'));
+					yData.push(reading[1]);
+					hoverText.push(`<b> ${readingTime.format('dddd, MMM DD, YYYY hh:mm a')} </b> <br> ${label}: ${reading[1]} kW`);
+				});				
+
+				// Save plot timestamp range
+				let minTimestamp: string = "";
+				let maxTimestamp: string = "";
+				if (readings.length > 0){
+					minTimestamp = readings[0][0].toString();
+					maxTimestamp = readings[readings.length-1][0].toString();
+				}			
+				let root: any = document.getElementById('root');	
+				root.setAttribute("min-timestamp", minTimestamp);
+				root.setAttribute("max-timestamp", maxTimestamp);	
 
 				datasets.push({
 					name: label,
@@ -53,8 +53,8 @@ function mapStateToProps(state: State){
 					text: hoverText,
 					hoverinfo: 'text',
 					type: 'scatter',
-	            	mode: 'lines',
-	            	marker: {color: getGraphColor(label)},
+					mode: 'lines',
+					marker: {color: getGraphColor(label)}
 				});
 			}
 		}
@@ -74,11 +74,11 @@ function mapStateToProps(state: State){
 				const xData: string[] = [];
 				const yData: number[] = [];
 				const hoverText: string[] = [];
-				_.values(readingsData.readings).forEach(function(reading){
+				_.values(readingsData.readings).forEach(reading => {
 					const readingTime = moment(reading[0]);
- 					xData.push(readingTime.format('YYYY-MM-DD'));
-  					yData.push(reading[1]);
-  					hoverText.push(`<b> ${readingTime.format('dddd, MMM DD, YYYY hh:mm a')} </b> <br> ${label}: ${reading[1]} kW`);
+					xData.push(readingTime.format('YYYY-MM-DD HH:mm:ss'));
+					yData.push(reading[1]);
+					hoverText.push(`<b> ${readingTime.format('dddd, MMM DD, YYYY hh:mm a')} </b> <br> ${label}: ${reading[1]} kW`);
 				});
 
 				datasets.push({
@@ -88,40 +88,38 @@ function mapStateToProps(state: State){
 					text: hoverText,
 					hoverinfo: 'text',
 					type: 'scatter',
-	            	mode: 'lines',
-	            	marker: {color: getGraphColor(label)},
+					mode: 'lines',
+					marker: {color: getGraphColor(label)}
 				});
 			}
 		}
 	}
 	
 	const layout: any = {
-	// const layout: Partial<Layout> = {
 		autozise: true,
-		title: "First Test",
+		title: 'First Test',
 		showlegend: true,
 		legend: {
 			x: 0,
 			y: 1.1,
-			"orientation": "h",
+			orientation: 'h',
 		},
 		yaxis: {
-    		title: 'kW',
-    		showgrid: true,
-    		gridcolor: '#ddd'
+			title: 'kW',
+			showgrid: true,
+			gridcolor: '#ddd'
 
-        },        
+		},
 		xaxis: {
-            rangeslider: {thickness: 0.1},
-            showgrid: true,
-            gridcolor: '#ddd'
+			rangeslider: {thickness: 0.1},
+			showgrid: true,
+			gridcolor: '#ddd'
 
-        },
+		},
 	};
 
 
 	const props: IPlotlyChartProps = {
-	// const props: PlotParams = {
 		data: datasets,
 		layout
 	};
