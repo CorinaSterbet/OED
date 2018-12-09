@@ -12,7 +12,7 @@ import PlotlyChart, { IPlotlyChartProps } from 'react-plotlyjs-ts';
 function mapStateToProps(state: State){
 	const timeInterval = state.graph.timeInterval;
 	const datasets: any[] = [];
-	
+
 	// Add all meters data to the chart
 	for (const meterID of state.graph.selectedMeters) {
 		const byMeterID = state.readings.line.byMeterID[meterID];
@@ -33,7 +33,7 @@ function mapStateToProps(state: State){
 					xData.push(readingTime.format('YYYY-MM-DD HH:mm:ss'));
 					yData.push(reading[1]);
 					hoverText.push(`<b> ${readingTime.format('dddd, MMM DD, YYYY hh:mm a')} </b> <br> ${label}: ${reading[1]} kW`);
-				});				
+				});
 
 				// Save plot timestamp range
 				let minTimestamp: string = "";
@@ -41,10 +41,10 @@ function mapStateToProps(state: State){
 				if (readings.length > 0){
 					minTimestamp = readings[0][0].toString();
 					maxTimestamp = readings[readings.length-1][0].toString();
-				}			
-				let root: any = document.getElementById('root');	
+				}
+				let root: any = document.getElementById('root');
 				root.setAttribute("min-timestamp", minTimestamp);
-				root.setAttribute("max-timestamp", maxTimestamp);	
+				root.setAttribute("max-timestamp", maxTimestamp);
 
 				datasets.push({
 					name: label,
@@ -94,7 +94,6 @@ function mapStateToProps(state: State){
 			}
 		}
 	}
-	
 	const layout: any = {
 		autozise: true,
 		title: 'First Test',
@@ -108,14 +107,12 @@ function mapStateToProps(state: State){
 			title: 'kW',
 			showgrid: true,
 			gridcolor: '#ddd'
-
 		},
 		xaxis: {
 			rangeslider: {thickness: 0.1},
 			showgrid: true,
 			gridcolor: '#ddd'
-
-		},
+		}
 	};
 
 
