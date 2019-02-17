@@ -54,6 +54,7 @@ function mapStateToProps(state: State){
 					hoverinfo: 'text',
 					type: 'scatter',
 					mode: 'lines',
+					line: {shape: 'spline'},
 					marker: {color: getGraphColor(label)}
 				});
 			}
@@ -89,6 +90,7 @@ function mapStateToProps(state: State){
 					hoverinfo: 'text',
 					type: 'scatter',
 					mode: 'lines',
+					line: {shape: 'spline'},
 					marker: {color: getGraphColor(label)}
 				});
 			}

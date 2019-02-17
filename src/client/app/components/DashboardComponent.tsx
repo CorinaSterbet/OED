@@ -118,6 +118,7 @@ export default class DashboardComponent extends React.Component<DashboardProps, 
 				let fullWidth: number = parseInt(sliderContainer.getAttribute("width"));
 				let sliderMinX: number = parseInt(sliderBox.getAttribute("x"));
 				let sliderMaxX: number = sliderMinX + parseInt(sliderBox.getAttribute("width"));
+				if (sliderMaxX - sliderMinX == fullWidth) return;
 
 				// From the Plotly line graph, get current min and max times in seconds
 				let minTimeStamp: number = parseInt(root.getAttribute("min-timestamp"));
