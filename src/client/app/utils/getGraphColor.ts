@@ -2,31 +2,31 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-
- const​ ​ colors​ = [
-	'#000000'​ , ​ '#ff66cc'​ , ​ '#66ccff'​ , ​ '#644f7a'​ , ​ '#53a122'​ , ​ '#a4e46b'​ ,
-	'#f69454'​ ,  '#24978d'​ ,  '#05445c'​ , ​ '#9f2405'​ , ​ '#853475'​ , ​ '#fbc4a7'​ ,
-	'#ffb467'​ , ​ '#583b39'​ , ​ '#f0dfc5'​ ,  '#85695d'​ ,  '#9a9a9a'​ , ​ '#999999'​ ,
-	'#cc00ff'​ , ​ '#cccccc'​ , ​ '#ccccff'​ , ​ '#cc6600'​ , ​ '#ff0000'​ ,  '#ff6600'​ ,
-	'#ff99ff'​ , ​ '#99ffcc'​ , ​ '#cc00cc'​ , ​ '#996633'​ , ​ '#cc6633'​ , ​ '#0000cc'​ ,
-	'#0000ff'​ ,  '#006600'​ ,  '#009900'​ , ​ '#009966'​ , ​ '#782570'​ , ​ '#aca0b6'​ ,
-	'#0422bd'​ , ​ '#a94523'​ , ​ '#133337'​ ,  '#008080'
+//list length = prime number 43.
+const​ ​ graphColors​ = [
+	'#FF3232​' , '#7FFF32' , '#E5FF32​' , '#FFB232'​ , '#FF32B4'​ ,​ '#D632FF​' ,
+	'#3281FF​' , '#32DCFF​' , '#32FF84​' , '#B20000​' , '#42B200'​ , '#9CB200' ,
+	'#B26F00​' , '#B20071'​ ,​ '#8E00B2'​ , '#0044B2'​ , '#0094B2'​ , '#00B247​' ,
+	'#660000​' , '#266600' , '#596600​' ,​ '#663F00'​ ,​ '#660040' , '#510066' ,
+	'#002766​' , '#005466' , '#006628​'​ ,​ '#EAFF59' , '#0661FF​' , '#00D4FF​' ,
+	'#FFC059​' , '#FF59C2​' , '#DD59FF​' , '#5998FF'​ , '#59E3FF'​ , '#59FF9B​' ,
+	'#FF0000​' , '#5FFF00​' , '#DFFF00​' , '#FF9F00'​ , '#FF00A1'​ ,​ '#CC00FF​' ,
+	'#00FF66​' 
 	];
 
-/**
- * Generates a hash from a label, then selects color based on the hash
- * Based on: https://stackoverflow.com/a/20156012/5116950
- * @param {String} label Graph label to hash
- * @returns {String} Hex color code
- */
-export default function getGraphColor(label: string): string {
-	let hash = 0;
-	if (label.length !== 0) {
-		for (let i = 0; i < label.length; i++) {
-			hash = label.charCodeAt(i) + ((hash << 5) - hash); // tslint:disable-line no-bitwise
-			hash &= hash; // tslint:disable-line no-bitwise
+	const colorsReversed = graphColors.reverse();
+
+	/**
+	 * Chooses meter or group color based on their
+	 * @param {number} label Graph ID number to use as index
+	 * @param {boolean} meter true if graphing a meter, false if graphing a group.
+	 * @returns {String} Hex color code
+	 */
+	export default function getGraphColor(graphID: number, meter: boolean): string {
+		if (meter) { //if meter is being graphed
+			return graphColors[(graphID - 1) % graphColors.length];
+		} else{ //if group is being graphed
+			return colorsReversed[(graphID - 1) % colorsReversed.length]
 		}
-		hash = Math.abs(hash);
 	}
-	return colors[hash % colors.length];
-}
+
