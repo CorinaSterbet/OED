@@ -14,7 +14,7 @@ const​ ​ graphColors​ = [
 	'#00FF66​' 
 	];
 
-	const colorsReversed = graphColors.reverse();
+	//const colorsReversed = graphColors.reverse();
 
 	/**
 	 * Chooses meter or group color based on their
@@ -26,7 +26,7 @@ const​ ​ graphColors​ = [
 		if (meter) { //if meter is being graphed
 			return graphColors[(graphID - 1) % graphColors.length];
 		} else{ //if group is being graphed
-			return colorsReversed[(graphID - 1) % colorsReversed.length]
+			return graphColors[(graphID - 1) % graphColors.length]
 		}
 	}
 
