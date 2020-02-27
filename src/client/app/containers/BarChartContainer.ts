@@ -39,7 +39,7 @@ function mapStateToProps(state: State) {
 					text: hoverText,
 					hoverinfo: 'text',
 					type: 'bar',
-					marker: {color: getGraphColor(label)}
+					marker: {color: getGraphColor(meterID, true)}
 				});
 			}
 		}
@@ -69,7 +69,7 @@ function mapStateToProps(state: State) {
 					text: hoverText,
 					hoverinfo: 'text',
 					type: 'bar',
-					marker: {color: getGraphColor(label)}
+					marker: {color: getGraphColor(groupID, false)}
 				});
 			}
 		}

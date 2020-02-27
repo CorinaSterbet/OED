@@ -61,7 +61,7 @@ function mapStateToProps(state: State){
 						width: 3
 						// smoothing: 1.3
 					},
-					marker: {color: getGraphColor(label)}
+					marker: {color: getGraphColor(meterID, true)}
 				});
 			}
 		}
@@ -102,7 +102,7 @@ function mapStateToProps(state: State){
 						shape: 'spline',
 						width: 3
 					},
-					marker: {color: getGraphColor(label)}
+					marker: {color: getGraphColor(groupID, false)}
 				});
 			}
 		}
